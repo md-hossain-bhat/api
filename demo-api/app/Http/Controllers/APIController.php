@@ -20,4 +20,17 @@ class APIController extends Controller
             return response()->json(["users"=>$users]);
         }
     }
+
+    public function addUser(Request $request){
+        if($request->isMethod('post')){
+            $userData = $request->input();
+            // echo "<pre>"; print_r($userData);die;
+            $user = new User;
+            $user->name = $userData['name'];
+            $user->email = $userData['email'];
+            $user->password = bcrypt($userData['password']);
+            $user->save();
+            return response()->json(["message"=>'user added successfully!']);
+        }
+    }
 }
