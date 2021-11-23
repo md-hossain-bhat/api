@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::namespace('App\Http\Controllers')->group(function(){
     Route::get('users','APIController@getUsers');
     Route::post('add-user','APIController@addUser');
+    Route::post('add-multiple-users','APIController@addMultipleUsers');
     Route::get('users/{id?}','APIController@getSingleUser');
 });
 
