@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\models\User;
+use Validator;
+
 class APIController extends Controller
 {
     public function getUsers(){
@@ -26,19 +28,36 @@ class APIController extends Controller
             $userData = $request->input();
             // echo "<pre>"; print_r($userData);die;
             //api validatio and empty data check
-            if(empty($userData['name'])|| empty($userData['email'])||empty($userData['password'])){
-               $error_message ="please enter user details";
-            }
-            if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-                $error_message ="please enter valid email";
-            }
-            $useCount = User::where('email',$userData['email'])->count();
-            if($useCount > 0){
-                $error_message ="Email already exist!";
-            }
+            // if(empty($userData['name'])|| empty($userData['email'])||empty($userData['password'])){
+            //    $error_message ="please enter user details";
+            // }
+            // if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
+            //     $error_message ="please enter valid email";
+            // }
+            // $useCount = User::where('email',$userData['email'])->count();
+            // if($useCount > 0){
+            //     $error_message ="Email already exist!";
+            // }
 
-            if(isset($error_message)&&!empty($error_message)){
-                return response()->json(['status'=>false,'message'=>$error_message],422); 
+            // if(isset($error_message)&&!empty($error_message)){
+            //     return response()->json(['status'=>false,'message'=>$error_message],422); 
+            // }
+            //advance validation api
+            $rulse = [
+                "name"=>"required|regex:/(^([a-zA-z]+)(\d+)?$)/u",
+                "email"=>"required|email|unique:users",
+                "password"=>"required"
+            ];
+            $customMessage = [
+                'name.required' =>'Name is required',
+                'email.required' =>'Email is required',
+                'email.email' =>'valid email is required',
+                'name.unique' =>'Email has been taken exist!',
+                'name.password' =>'Password is required'
+            ];
+            $validator = Validator::make($userData,$rulse,$customMessage);
+            if($validator->fails()){
+                return response()->json($validator->errors(),422); 
             }
             $user = new User;
             $user->name = $userData['name'];
