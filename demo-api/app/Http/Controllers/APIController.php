@@ -72,6 +72,22 @@ class APIController extends Controller
         if($request->isMethod('post')){
             $userData = $request->input();
             // echo "<pre>"; print_r($userData);die;
+            $rulse = [
+                "users.*.name"=>"required|regex:/(^([a-zA-z]+)(\d+)?$)/u",
+                "users.*.email"=>"required|email|unique:users",
+                "users.*.password"=>"required"
+            ];
+            $customMessage = [
+                'users.*.name.required' =>'Name is required',
+                'users.*.email.required' =>'Email is required',
+                'users.*.email.email' =>'valid email is required',
+                'users.*.name.unique' =>'Email has been taken exist!',
+                'users.*.name.password' =>'Password is required'
+            ];
+            $validator = Validator::make($userData,$rulse,$customMessage);
+            if($validator->fails()){
+                return response()->json($validator->errors(),422); 
+            }
             foreach($userData['users'] as $key =>$value){
                 $user = new User;
                 $user->name = $value['name'];
