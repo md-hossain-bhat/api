@@ -8,16 +8,16 @@ class APIController extends Controller
 {
     public function getUsers(){
         $users = User::get();
-        return response()->json(["users"=>$users]);
+        return response()->json(["users"=>$users],200);
     }
 
     public function getSingleUser($id=null){
         if(empty($id)){
             $users = User::get();
-            return response()->json(["users"=>$users]);
+            return response()->json(["users"=>$users],200);
         }else{
             $users = User::find($id);
-            return response()->json(["users"=>$users]);
+            return response()->json(["users"=>$users],200);
         }
     }
 
@@ -25,12 +25,27 @@ class APIController extends Controller
         if($request->isMethod('post')){
             $userData = $request->input();
             // echo "<pre>"; print_r($userData);die;
+            //api validatio and empty data check
+            if(empty($userData['name'])|| empty($userData['email'])||empty($userData['password'])){
+               $error_message ="please enter user details";
+            }
+            if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
+                $error_message ="please enter valid email";
+            }
+            $useCount = User::where('email',$userData['email'])->count();
+            if($useCount > 0){
+                $error_message ="Email already exist!";
+            }
+
+            if(isset($error_message)&&!empty($error_message)){
+                return response()->json(['status'=>false,'message'=>$error_message],422); 
+            }
             $user = new User;
             $user->name = $userData['name'];
             $user->email = $userData['email'];
             $user->password = bcrypt($userData['password']);
             $user->save();
-            return response()->json(["message"=>'user added successfully!']);
+            return response()->json(["message"=>'user added successfully!'],201);
         }
     }
     
@@ -45,7 +60,7 @@ class APIController extends Controller
                 $user->password = bcrypt($value['password']);
                 $user->save();
             }
-            return response()->json(["message"=>'user added successfully!']);
+            return response()->json(["message"=>'user added successfully!'],201);
         }
     }
 }
