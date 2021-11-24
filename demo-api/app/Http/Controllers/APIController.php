@@ -98,4 +98,30 @@ class APIController extends Controller
             return response()->json(["message"=>'user added successfully!'],201);
         }
     }
+
+    public function updateUserDetails(Request $request,$id){
+        if($request->isMethod("put")){
+            $userData = $request->input();
+            // echo "<pre>"; print_r($userData);die;
+            $rulse = [
+                "name"=>"required|regex:/(^([a-zA-z]+)(\d+)?$)/u",
+                "email"=>"required|email|unique:users",
+                "password"=>"required"
+            ];
+            $customMessage = [
+                'name.required' =>'Name is required',
+                'email.required' =>'Email is required',
+                'email.email' =>'valid email is required',
+                'name.unique' =>'Email has been taken exist!',
+                'name.password' =>'Password is required'
+            ];
+            $validator = Validator::make($userData,$rulse,$customMessage);
+            if($validator->fails()){
+                return response()->json($validator->errors(),422); 
+            }
+            
+            User::where('id',$id)->update(['name'=>$userData['name'],'email'=>$userData['email'],'password'=>bcrypt($userData['password'])]);
+            return response()->json(["message"=>'user details updated successfully!'],202);
+        }
+    }
 }
