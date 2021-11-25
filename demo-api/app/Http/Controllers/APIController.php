@@ -143,4 +143,9 @@ class APIController extends Controller
 
         }
     }
+
+    public function deleteUser($id){
+        User::where('id',$id)->delete();
+        return response()->json(["message"=>'user delete successfully!'],202);
+    }
 }
