@@ -24,5 +24,6 @@ Route::namespace('App\Http\Controllers')->group(function(){
     Route::post('add-multiple-users','APIController@addMultipleUsers');
     Route::get('users/{id?}','APIController@getSingleUser');
     Route::put('user-details-update/{id}','APIController@updateUserDetails');
+    Route::patch('user-update/{id}','APIController@updateUser');
 });
 

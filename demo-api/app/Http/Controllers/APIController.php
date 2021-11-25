@@ -124,4 +124,23 @@ class APIController extends Controller
             return response()->json(["message"=>'user details updated successfully!'],202);
         }
     }
+    public function updateUser(Request $request,$id){
+        if($request->isMethod("patch")){
+            $userData = $request->input();
+            // echo "<pre>"; print_r($userData);die;
+            $rulse = [
+                "name"=>"required|regex:/(^([a-zA-z]+)(\d+)?$)/u"
+            ];
+            $customMessage = [
+                'name.required' =>'Name is required'
+            ];
+            $validator = Validator::make($userData,$rulse,$customMessage);
+            if($validator->fails()){
+                return response()->json($validator->errors(),422); 
+            }
+            User::where('id',$id)->update(['name'=>$userData['name']]);
+            return response()->json(["message"=>'user updated successfully!'],202);
+
+        }
+    }
 }
