@@ -28,5 +28,6 @@ Route::namespace('App\Http\Controllers')->group(function(){
     Route::delete('delete-user/{id}','APIController@deleteUser');
     Route::delete('delete-user-with-json','APIController@deleteUserJon');
     Route::delete('delete-multiple-users/{ids}','APIController@deleteMultipleUser');
+    Route::delete('delete-multiple-users-with-json','APIController@deleteMultipleUserJson');
 });
 
