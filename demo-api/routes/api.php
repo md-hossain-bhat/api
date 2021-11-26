@@ -26,5 +26,7 @@ Route::namespace('App\Http\Controllers')->group(function(){
     Route::put('user-details-update/{id}','APIController@updateUserDetails');
     Route::patch('user-update/{id}','APIController@updateUser');
     Route::delete('delete-user/{id}','APIController@deleteUser');
+    Route::delete('delete-user-with-json','APIController@deleteUserJon');
+    Route::delete('delete-multiple-users/{ids}','APIController@deleteMultipleUser');
 });
 

@@ -148,4 +148,19 @@ class APIController extends Controller
         User::where('id',$id)->delete();
         return response()->json(["message"=>'user delete successfully!'],202);
     }
+
+    public function deleteUserJon(Request $request){
+        if($request->isMethod('delete')){
+            $userData = $request->all();
+            // echo "<pre>"; print_r($userData);die;
+            User::where('id',$userData['id'])->delete();
+            return response()->json(["message"=>'user delete successfully!'],200);
+        }
+    }
+    public function deleteMultipleUser($ids){
+        $ids = explode(',',$ids);
+        // echo "<pre>"; print_r($ids);die;
+        User::whereIn('id',$ids)->delete();
+        return response()->json(["message"=>'users delete successfully!'],202);
+    }
 }
